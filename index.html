@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Polenta</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="caja">
+    <div id="login-register">
+     <h2>INICIAR SESIÓN/ REGISTRARSE</h2>
+     <input type="text" id="usuario" placeholder="Usuario"><br>
+     <input type="password" id="password" placeholder="Contraseña"><br>
+     <button onclick="registrar()">Registrarse</button>
+     <button onclick="login()">Iniciar Sesión</button>
+     <p id="mensaje"></p>
+    </div>
+
+<div id="links" style="display:none;">
+      <h2>Bienvenido, <span id="nombreUsuario"></span></h2>
+      <button onclick="cerrarSesion()">Cerrar Sesión</button>
+
+      <div id="todo">
+        <h3>📝 Lista de Tareas</h3>
+        <input type="text" id="nuevaTarea" placeholder="Escribí una tarea">
+        <button onclick="agregarTarea()">Agregar</button>
+
+        <ul id="listaTareas"></ul>
+      </div>
+    </div>
+  </div>
+    <script src="script.js"></script>
+</body>
+</html>

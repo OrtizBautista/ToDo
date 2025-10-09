@@ -1,0 +1,135 @@
+body{
+ font-family: 'Roboto', sans-serif; /* Fuente */
+ background-image: url(./assets/Hajime\ no\ Ippo\ -\ Hachi\ and\ Makunouchi\ Ippo.jpg);
+ background-repeat: no-repeat;
+ background-position: center;
+ background-size: cover;
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ height: 100vh;
+ margin: 0;
+ background-color: rgb(5, 0, 54);   
+}
+
+h2{ 
+ font-size: 30px;
+ margin: 0px;
+ color:white;
+ text-shadow: 0 0 10px #b4b4b4, 0 0 20px #2f2f2f, 0 0 30px #343434;
+ font-family: "Indie Flower", cursive;
+ animation: flameTitle 1.5s infinite alternate;
+}
+
+@keyframes flameTitle {
+    0% {
+        text-shadow: 0 0 10px #b4b4b4, 0 0 20px #2f2f2f, 0 0 30px #343434;
+    }
+    50% {
+        text-shadow: 0 0 15px #b4b4b4, 0 0 25px #2f2f2f, 0 0 35px #343434;
+    }
+    100% {
+        text-shadow: 0 0 10px #b4b4b4, 0 0 20px #2f2f2f, 0 0 30px #343434;
+    }
+}
+
+input{  
+font-family: 'Roboto', sans-serif; /* Fuente */
+background-color: rgba(0, 170, 255, 0);
+color: rgb(25, 45, 55);
+padding: 10px 20px;
+margin-bottom: 5px;
+font-size: 15px;
+border-radius: 200px;
+border: 2px solid rgb(25, 45, 55);
+transition: all 0.3s ease;
+}
+
+::placeholder{
+color: rgb(25, 45, 55);
+font-size: 15px;}
+
+input:focus {
+    outline: none;
+    animation: flameInput 1s infinite alternate;
+}
+
+@keyframes flameInput {
+    0% {
+        text-shadow: 0 0 10px #b4b4b4, 0 0 20px #2f2f2f, 0 0 30px #343434;
+    }
+    50% {
+        text-shadow: 0 0 15px #b4b4b4, 0 0 25px #2f2f2f, 0 0 35px #343434;
+    }
+    100% {
+        text-shadow: 0 0 10px #b4b4b4, 0 0 20px #2f2f2f, 0 0 30px #343434;
+    }
+}
+
+button{
+font-family: 'Roboto', sans-serif; /* Fuente */
+background-color: rgba(0, 0, 0, 0.529);
+color: rgb(255, 255, 255);
+padding: 10px 20px;
+margin-bottom: 5px;
+font-size: 15px;
+border-radius: 200px;
+border: 0;
+transition: all 0.3s ease;
+}
+
+button:focus {
+    outline: none;
+    animation: flameButton 1s infinite alternate;
+}
+
+@keyframes flameButton {
+    0% {
+        text-shadow: 0 0 10px #b4b4b4, 0 0 20px #2f2f2f, 0 0 30px #343434;
+    }
+    50% {
+        text-shadow: 0 0 15px #b4b4b4, 0 0 25px #2f2f2f, 0 0 35px #343434;
+    }
+    100% {
+        text-shadow: 0 0 10px #b4b4b4, 0 0 20px #2f2f2f, 0 0 30px #343434;
+    }
+}
+
+/* Hover para botones */
+button:hover {
+    animation: flameButtonHover 1s infinite alternate;
+    cursor: pointer;
+}
+
+@keyframes flameButtonHover {
+    0% {
+        text-shadow: 0 0 10px #b4b4b4, 0 0 20px #2f2f2f, 0 0 30px #343434;
+    }
+    50% {
+        text-shadow: 0 0 15px #b4b4b4, 0 0 25px #2f2f2f, 0 0 35px #343434;
+    }
+    100% {
+        text-shadow: 0 0 10px #b4b4b4, 0 0 20px #2f2f2f, 0 0 30px #343434;
+    }
+}
+input:hover {
+    cursor: text; /* opcional */
+    box-shadow: 0 0 8px #b4b4b4, 0 0 15px #2f2f2f; /* efecto sutil al pasar el mouse */
+}
+
+#caja{
+ background-color: rgba(255, 0, 0, 0);
+ padding: 25px 50px;
+ border-radius: 200px;
+ text-align: center;
+}
+/* Video de fondo */
+#fondoVideo {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* cubre toda la pantalla */
+  z-index: -1; /* detrás de todo */
+}
