@@ -9,9 +9,12 @@ body {
   align-items: center; /* Centra verticalmente */
   height: 100vh; /* Ocupa toda la altura de la pantalla */
   margin: 0; /* Quita los márgenes por defecto del navegador */
-  background-color: rgb(5, 0, 54); /* Color de fondo base por si no carga la imagen */
 }
-
+p{
+  font-size: 20px;
+  font-weight: bold ;
+  color: red;
+}
 /* ---------- TÍTULOS ---------- */
 h2 {
   font-size: 30px; /* Tamaño del texto */
@@ -133,10 +136,18 @@ button:hover {
 
 /* ---------- CAJA PRINCIPAL ---------- */
 #caja {
-  background-color: rgba(0, 0, 0, 0); /* Fondo transparente */
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   padding: 25px 50px; /* Espaciado interno */
   border-radius: 200px; /* Bordes redondeados */
   text-align: center; /* Centra el contenido */
+  animation: aparecerCaja 0.8s ease;
+}
+@keyframes aparecerCaja {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
 }
 
 /* ---------- SECCIÓN DE TAREAS ---------- */
@@ -165,6 +176,7 @@ li {
   padding: 8px; /* Relleno interno */
   border-radius: 5px; /* Bordes redondeados */
   transition: all 0.3s ease;/* animacion */
+  animation: aparecer 0.3s ease;
 }
 /* animacion de tachado */
 li.completed {
@@ -176,6 +188,15 @@ li.completed span {
   text-decoration: line-through; /* Tacha el texto */
   color: gray; /* Cambia color a gris */
   
+}
+li:hover {
+  background-color: #eaf6ff;
+  transform: scale(1.02);
+}
+
+@keyframes aparecer {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* Botón para borrar tarea */
@@ -195,4 +216,38 @@ li.completed span {
 }
 #nuevaTarea{
     background-color: white;
+}
+/* 📱 Estilos para pantallas pequeñas (celulares) */
+@media (max-width: 600px) {
+
+  body {
+    background-size: cover;
+    background-position: center;
+    font-size: 14px; /* Hace el texto un poco más chico */
+  }
+
+  #caja {
+    width: 90%; /* Se adapta al ancho del celular */
+    padding: 20px;
+    margin: 20px;
+  }
+
+  input, button {
+    width: 100%; /* Que los botones e inputs ocupen todo el ancho */
+    font-size: 16px;
+  }
+
+  #listaTareas li {
+    font-size: 15px;
+    padding: 8px;
+  }
+
+  #contadorTareas {
+    font-size: 14px;
+  }
+
+  h1, h2 {
+    font-size: 22px;
+    text-align: center;
+  }
 }
