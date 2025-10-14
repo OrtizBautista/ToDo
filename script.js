@@ -24,12 +24,18 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
-// ======================
-// FUNCIONES PRINCIPALES
-// ======================
 document.addEventListener('DOMContentLoaded', () => {
 
+  // --- ELEMENTOS ---
   const mensaje = document.getElementById('mensaje');
+  const inputTarea = document.getElementById('nuevaTarea');
+
+  const btnRegistrar = document.getElementById('btnRegistrar');
+  const btnLogin = document.getElementById('btnLogin');
+  const btnAgregar = document.getElementById('btnAgregar');
+  const btnBorrarTodo = document.getElementById('btnBorrarTodo');
+  const btnCerrarSesion = document.getElementById('btnCerrarSesion');
+  const btnLoginGoogle = document.getElementById('loginGoogle');
 
   // --- FRASES MOTIVACIÓN ---
   const frases = [
@@ -40,8 +46,41 @@ document.addEventListener('DOMContentLoaded', () => {
   ];
   mensaje.innerText = frases[Math.floor(Math.random() * frases.length)];
 
+  // --- LOGIN TRADICIONAL ---
+  btnRegistrar.addEventListener('click', () => {
+    const usuario = document.getElementById('usuario').value.trim();
+    const password = document.getElementById('password').value.trim();
+
+    if (!usuario || !password) {
+      mensaje.innerText = "Completa todos los campos.";
+      return;
+    }
+
+    if (localStorage.getItem(usuario)) {
+      mensaje.innerText = "Usuario ya registrado.";
+    } else {
+      const hash = btoa(password);
+      localStorage.setItem(usuario, hash);
+      mensaje.innerText = "Usuario registrado. Ya podés iniciar sesión.";
+    }
+  });
+
+  btnLogin.addEventListener('click', () => {
+    const usuario = document.getElementById('usuario').value.trim();
+    const password = document.getElementById('password').value.trim();
+    const claveGuardada = localStorage.getItem(usuario);
+
+    if (claveGuardada && claveGuardada === btoa(password)) {
+      localStorage.setItem('usuarioActivo', usuario);
+      mostrarTodo(usuario);
+      cargarTareasFirebase(usuario);
+    } else {
+      mensaje.innerText = "Usuario o contraseña incorrectos.";
+    }
+  });
+
   // --- LOGIN CON GOOGLE ---
-  document.getElementById('loginGoogle').addEventListener('click', async () => {
+  btnLoginGoogle.addEventListener('click', async () => {
     try {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
@@ -54,33 +93,32 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // --- LOGIN AUTOMÁTICO ---
-  const usuarioActivo = localStorage.getItem('usuarioActivo');
-  if (usuarioActivo) {
-    mostrarTodo("Usuario");
-    cargarTareasFirebase(usuarioActivo);
-  }
-
   // --- CERRAR SESIÓN ---
-  window.cerrarSesion = async () => {
+  btnCerrarSesion.addEventListener('click', async () => {
     await signOut(auth);
     localStorage.removeItem('usuarioActivo');
     document.getElementById('login-register').style.display = 'block';
     document.getElementById('todo-list').style.display = 'none';
     document.getElementById('listaTareas').innerHTML = '';
-  };
+  });
 
-  // --- MOSTRAR TO-DO LIST ---
+  // --- AGREGAR TAREA ---
+  btnAgregar.addEventListener('click', agregarTarea);
+
+  inputTarea.addEventListener('keypress', e => {
+    if (e.key === 'Enter') agregarTarea();
+  });
+
+  btnBorrarTodo.addEventListener('click', borrarTodo);
+
+  // --- FUNCIONES ---
   function mostrarTodo(nombre) {
     document.getElementById('login-register').style.display = 'none';
     document.getElementById('todo-list').style.display = 'block';
     document.getElementById('nombreUsuario').textContent = nombre;
   }
 
-  // --- FUNCIONES DE TAREAS ---
-  const inputTarea = document.getElementById('nuevaTarea');
-
-  window.agregarTarea = async () => {
+  async function agregarTarea() {
     const texto = inputTarea.value.trim();
     const usuario = localStorage.getItem('usuarioActivo');
     if (!usuario) { alert("Debés iniciar sesión para agregar tareas."); return; }
@@ -101,19 +139,16 @@ document.addEventListener('DOMContentLoaded', () => {
     inputTarea.value = '';
     await guardarTareasFirebase(usuario);
     actualizarContador();
-  };
+  }
 
-  inputTarea.addEventListener('keypress', e => { if (e.key === 'Enter') agregarTarea(); });
-
-  window.borrarTodo = async () => {
+  async function borrarTodo() {
     if (confirm("¿Seguro que querés eliminar todas las tareas?")) {
       document.getElementById('listaTareas').innerHTML = '';
       await guardarTareasFirebase(localStorage.getItem('usuarioActivo'));
       actualizarContador();
     }
-  };
+  }
 
-  // --- FUNCIONES AUXILIARES ---
   function actualizarContador() {
     const total = document.querySelectorAll('#listaTareas li').length;
     const completadas = document.querySelectorAll('#listaTareas li.completed').length;

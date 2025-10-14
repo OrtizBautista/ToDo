@@ -16,8 +16,8 @@
       <!-- Login tradicional -->
       <input type="text" id="usuario" placeholder="Usuario"><br>
       <input type="password" id="password" placeholder="Contraseña"><br>
-      <button onclick="registrar()">Registrarse</button>
-      <button onclick="login()">Iniciar Sesión</button>
+      <button id="btnRegistrar">Registrarse</button>
+      <button id="btnLogin">Iniciar Sesión</button>
 
       <!-- Login con Google -->
       <button id="loginGoogle">Iniciar sesión con Google</button>
@@ -31,18 +31,18 @@
       <div id="todo">
         <h3>📝 Lista de Tareas</h3>
         <input type="text" id="nuevaTarea" placeholder="Escribí una tarea">
-        <button onclick="agregarTarea()">Agregar</button>
+        <button id="btnAgregar">Agregar</button>
 
         <p id="contadorTareas"></p>
         <ul id="listaTareas"></ul>
 
-        <button onclick="borrarTodo()">Borrar todo</button>
-        <button onclick="cerrarSesion()">Cerrar Sesión</button>
+        <button id="btnBorrarTodo">Borrar todo</button>
+        <button id="btnCerrarSesion">Cerrar Sesión</button>
       </div>
     </div>
   </div>
 
-  <!-- Script separado con Firebase y Google Auth -->
+  <!-- Script separado como módulo -->
   <script type="module" src="script.js"></script>
 </body>
 </html>
