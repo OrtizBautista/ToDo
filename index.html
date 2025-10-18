@@ -1,48 +1,41 @@
-<!DOCTYPE html>
-<html lang="es">
+<!DOCTYPE html> <!-- Indica que este documento es HTML5 -->
+<html lang="en"> <!-- Abre el documento HTML y especifica el idioma (inglés en este caso) -->
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Polenta</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="shortcut icon" href="./assets/favicon.png" type="image/png">
+    <meta charset="UTF-8"> <!-- Permite usar acentos, ñ y caracteres especiales -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Hace la página adaptable a distintos tamaños de pantalla -->
+    <title>Polenta</title> <!-- Título de la pestaña del navegador -->
+    <link rel="stylesheet" href="style.css"> <!-- Vincula el archivo de estilos CSS -->
+    <link rel="shortcut icon" href="./assets/favicon.png" type="image/png"> <!-- Icono que aparece en la pestaña -->
 </head>
 <body>
-  <div id="caja">
-    <!-- LOGIN / REGISTRO -->
-    <div id="login-register">
-      <h2>INICIAR SESIÓN / REGISTRARSE</h2>
+    <div id="caja"> <!-- Contenedor principal -->
+      
+      <!-- Sección de iniciar secion y registro -->
+      <div id="login-register">
+        <h2>INICIAR SESIÓN/ REGISTRARSE</h2> <!-- titulo --> 
+        <input type="text" id="usuario" placeholder="Usuario"><br> <!-- Campo de texto para el usuario -->
+        <input type="password" id="password" placeholder="Contraseña"><br> <!-- Campo de texto para la contraseña -->
+        <button onclick="registrar()">Registrarse</button> <!-- Botón que llama a la función registrar() -->
+        <button onclick="login()">Iniciar Sesión</button> <!-- Botón que llama a la función login() -->
+        <p id="mensaje"></p> <!-- Muestra mensajes de error o confirmación -->
+      </div>
 
-      <!-- Login tradicional -->
-      <input type="text" id="usuario" placeholder="Usuario"><br>
-      <input type="password" id="password" placeholder="Contraseña"><br>
-      <button id="btnRegistrar">Registrarse</button>
-      <button id="btnLogin">Iniciar Sesión</button>
+      <!-- Sección visible solo después de iniciar sesión -->
+      <div id="todo-list" style="display:none;">
+        <h2>Bienvenido, <span id="nombreUsuario"></span></h2> <!-- Muestra el nombre del usuario activo -->
 
-      <!-- Login con Google -->
-      <button id="loginGoogle">Iniciar sesión con Google</button>
+        <div id="todo"> <!-- Contenedor del to-do list -->
+          <h3>📝 Lista de Tareas</h3>
+          <input type="text" id="nuevaTarea" placeholder="Escribí una tarea"> <!-- Campo para escribir la tarea -->
+          <button onclick="agregarTarea()">Agregar</button> <!-- Botón para agregar la tarea -->
 
-      <p id="mensaje"></p>
-    </div>
-
-    <!-- TO-DO LIST -->
-    <div id="todo-list" style="display:none;">
-      <h2>Bienvenido, <span id="nombreUsuario"></span></h2>
-      <div id="todo">
-        <h3>📝 Lista de Tareas</h3>
-        <input type="text" id="nuevaTarea" placeholder="Escribí una tarea">
-        <button id="btnAgregar">Agregar</button>
-
-        <p id="contadorTareas"></p>
-        <ul id="listaTareas"></ul>
-
-        <button id="btnBorrarTodo">Borrar todo</button>
-        <button id="btnCerrarSesion">Cerrar Sesión</button>
+          <ul id="listaTareas"></ul> <!-- Lista donde se mostrarán las tareas -->
+          
+          <button onclick="cerrarSesion()">Cerrar Sesión</button> <!-- Botón para cerrar sesión -->
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- Script separado como módulo -->
-  <script type="module" src="script.js"></script>
+    <script src="script.js"></script> <!-- Vincula el archivo JavaScript -->
 </body>
 </html>

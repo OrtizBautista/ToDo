@@ -1,6 +1,6 @@
 /* ---------- CONFIGURACIÓN GENERAL ---------- */
 body {
-  background-image: url(./assets/Hajime\ no\ Ippo\ -\ Hachi\ and\ Makunouchi\ Ippo.jpg); /* Imagen de fondo */
+  background-image: url(./assets/1328556.png); /* Imagen de fondo */
   background-repeat: no-repeat; /* Evita que la imagen se repita */
   background-position: center; /* Centra la imagen en la pantalla */
   background-size: cover; /* Hace que la imagen cubra toda la pantalla */
@@ -9,42 +9,44 @@ body {
   align-items: center; /* Centra verticalmente */
   height: 100vh; /* Ocupa toda la altura de la pantalla */
   margin: 0; /* Quita los márgenes por defecto del navegador */
+  background-color: rgb(75, 0, 22); /* Color de fondo base por si no carga la imagen */
 }
 p{
-  font-size: 20px;
+  font-size: 30px;
   font-weight: bold ;
-  color: red;
+  color: rgb(0, 183, 255);
 }
 /* ---------- TÍTULOS ---------- */
 h2 {
   font-size: 30px; /* Tamaño del texto */
   margin: 0px; /* Quita espacio extra arriba/abajo */
   color: white; /* Color del texto */
-  text-shadow: 0 0 10px #b4b4b4, 0 0 20px #2f2f2f, 0 0 30px #343434; /* Efecto de brillo */
+  text-shadow: 0 0 10px #ff0000, 0 0 20px #5f0000, 0 0 30px #310000; /* Efecto de brillo */
   font-family: "Indie Flower", cursive; /* Fuente más informal/dibujada */
   animation: flameTitle 1.5s infinite alternate; /* Efecto de parpadeo animado */
 }
 h3 {
     font-family: "Indie Flower", cursive; /* Fuente más informal/dibujada */
+    color: white;
 }
 
 /* Animación para el brillo del título */
 @keyframes flameTitle {
   0% {
-    text-shadow: 0 0 10px #b4b4b4, 0 0 20px #2f2f2f, 0 0 30px #343434;
+    text-shadow: 0 0 10px #570000, 0 0 20px #250000, 0 0 30px #000000;
   }
   50% {
-    text-shadow: 0 0 15px #b4b4b4, 0 0 25px #2f2f2f, 0 0 35px #343434;
+    text-shadow: 0 0 15px #570000, 0 0 25px #250000, 0 0 35px #000000;
   }
   100% {
-    text-shadow: 0 0 10px #b4b4b4, 0 0 20px #2f2f2f, 0 0 30px #343434;
+    text-shadow: 0 0 10px #570000, 0 0 20px #250000, 0 0 30px #310000;
   }
 }
 
 /* ---------- ENTRADAS DE TEXTO (input) ---------- */
 input {
   background-color: rgba(0, 170, 255, 0); /* Fondo transparente */
-  color: rgb(25, 45, 55); /* Color del texto */
+  color: rgb(255, 255, 255); /* Color del texto */
   padding: 10px 20px; /* Espaciado interno */
   margin-bottom: 5px; /* Separación entre inputs */
   font-size: 15px; /* Tamaño del texto */
@@ -55,7 +57,7 @@ input {
 
 /* Color del texto dentro del placeholder */
 ::placeholder {
-  color: rgb(25, 45, 55);
+  color: rgb(255, 255, 255);
   font-size: 15px;
 }
 
@@ -136,18 +138,10 @@ button:hover {
 
 /* ---------- CAJA PRINCIPAL ---------- */
 #caja {
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background-color: rgba(0, 0, 0, 0); /* Fondo transparente */
   padding: 25px 50px; /* Espaciado interno */
   border-radius: 200px; /* Bordes redondeados */
   text-align: center; /* Centra el contenido */
-  animation: aparecerCaja 0.8s ease;
-}
-@keyframes aparecerCaja {
-  from { opacity: 0; transform: scale(0.9); }
-  to { opacity: 1; transform: scale(1); }
 }
 
 /* ---------- SECCIÓN DE TAREAS ---------- */
@@ -164,19 +158,20 @@ ul {
   margin-top: 10px; /* Espacio superior */
   text-align: left; /* Alinea las tareas a la izquierda */
 
-}
+} 
 
 /* Cada tarea */
 li {
+  color: white;
+  font-weight: bold;
   display: flex; /* Pone elementos en una fila */
   align-items: center; /* Centra verticalmente */
   justify-content: space-between; /* Espacia entre texto y botón X */
-  background-color: #fafafa; /* Fondo claro para contraste */
+  background-color: rgba(0, 0, 0, 0.623); /* Fondo claro para contraste */
   margin-bottom: 5px; /* Espacio entre tareas */
   padding: 8px; /* Relleno interno */
   border-radius: 5px; /* Bordes redondeados */
   transition: all 0.3s ease;/* animacion */
-  animation: aparecer 0.3s ease;
 }
 /* animacion de tachado */
 li.completed {
@@ -188,15 +183,6 @@ li.completed span {
   text-decoration: line-through; /* Tacha el texto */
   color: gray; /* Cambia color a gris */
   
-}
-li:hover {
-  background-color: #eaf6ff;
-  transform: scale(1.02);
-}
-
-@keyframes aparecer {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
 }
 
 /* Botón para borrar tarea */
@@ -215,39 +201,6 @@ li:hover {
   background-color: #c0392b; /* Rojo más oscuro */
 }
 #nuevaTarea{
-    background-color: white;
-}
-/* 📱 Estilos para pantallas pequeñas (celulares) */
-@media (max-width: 600px) {
-
-  body {
-    background-size: cover;
-    background-position: center;
-    font-size: 14px; /* Hace el texto un poco más chico */
-  }
-
-  #caja {
-    width: 90%; /* Se adapta al ancho del celular */
-    padding: 20px;
-    margin: 20px;
-  }
-
-  input, button {
-    width: 100%; /* Que los botones e inputs ocupen todo el ancho */
-    font-size: 16px;
-  }
-
-  #listaTareas li {
-    font-size: 15px;
-    padding: 8px;
-  }
-
-  #contadorTareas {
-    font-size: 14px;
-  }
-
-  h1, h2 {
-    font-size: 22px;
-    text-align: center;
-  }
+    color: white;
+    background-color: rgba(255, 255, 255, 0);
 }

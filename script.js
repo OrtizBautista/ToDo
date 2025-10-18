@@ -1,207 +1,149 @@
-// ======================
-// POLENTA TO-DO LIST JS + FIREBASE
-// ======================
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
-import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-analytics.js";
-
-// --- CONFIGURACIÓN FIREBASE ---
-const firebaseConfig = {
-  apiKey: "AIzaSyCvDP4pbqwmZyRs05LK6FphTllrMgSGUXg",
-  authDomain: "to-do-c3c62.firebaseapp.com",
-  projectId: "to-do-c3c62",
-  storageBucket: "to-do-c3c62.firebasestorage.app",
-  messagingSenderId: "54932016187",
-  appId: "1:54932016187:web:37a25819662776954f201e",
-  measurementId: "G-Q8721DX0TX"
+// --- LOGIN Y REGISTRO ---
+window.onload = function() { // Cuando la página termina de cargar...
+  const usuarioActivo = localStorage.getItem('usuarioActivo'); // Busca si hay un usuario logueado guardado
+  if (usuarioActivo) { // Si existe un usuario activo...
+    mostrarTodo(); // Muestra la sección del to-do list
+    cargarTareas(usuarioActivo); // Carga sus tareas guardadas
+  }
 };
 
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-const db = getFirestore(app);
-const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
+function registrar() { // Función que registra nuevos usuarios
+  const usuario = document.getElementById('usuario').value.trim(); // Toma el nombre ingresado
+  const password = document.getElementById('password').value.trim(); // Toma la contraseña ingresada
 
-document.addEventListener('DOMContentLoaded', () => {
-
-  // --- ELEMENTOS ---
-  const mensaje = document.getElementById('mensaje');
-  const inputTarea = document.getElementById('nuevaTarea');
-
-  const btnRegistrar = document.getElementById('btnRegistrar');
-  const btnLogin = document.getElementById('btnLogin');
-  const btnAgregar = document.getElementById('btnAgregar');
-  const btnBorrarTodo = document.getElementById('btnBorrarTodo');
-  const btnCerrarSesion = document.getElementById('btnCerrarSesion');
-  const btnLoginGoogle = document.getElementById('loginGoogle');
-
-  // --- FRASES MOTIVACIÓN ---
-  const frases = [
-    "💪 ¡Podés con todo hoy!",
-    "🔥 No dejes que nada te detenga.",
-    "🧠 Un paso más, un logro más.",
-    "🌟 Lo estás haciendo genial."
-  ];
-  mensaje.innerText = frases[Math.floor(Math.random() * frases.length)];
-
-  // --- LOGIN TRADICIONAL ---
-  btnRegistrar.addEventListener('click', () => {
-    const usuario = document.getElementById('usuario').value.trim();
-    const password = document.getElementById('password').value.trim();
-
-    if (!usuario || !password) {
-      mensaje.innerText = "Completa todos los campos.";
-      return;
-    }
-
-    if (localStorage.getItem(usuario)) {
-      mensaje.innerText = "Usuario ya registrado.";
-    } else {
-      const hash = btoa(password);
-      localStorage.setItem(usuario, hash);
-      mensaje.innerText = "Usuario registrado. Ya podés iniciar sesión.";
-    }
-  });
-
-  btnLogin.addEventListener('click', () => {
-    const usuario = document.getElementById('usuario').value.trim();
-    const password = document.getElementById('password').value.trim();
-    const claveGuardada = localStorage.getItem(usuario);
-
-    if (claveGuardada && claveGuardada === btoa(password)) {
-      localStorage.setItem('usuarioActivo', usuario);
-      mostrarTodo(usuario);
-      cargarTareasFirebase(usuario);
-    } else {
-      mensaje.innerText = "Usuario o contraseña incorrectos.";
-    }
-  });
-
-  // --- LOGIN CON GOOGLE ---
-  btnLoginGoogle.addEventListener('click', async () => {
-    try {
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-      localStorage.setItem('usuarioActivo', user.uid);
-      mostrarTodo(user.displayName);
-      await cargarTareasFirebase(user.uid);
-    } catch (error) {
-      console.error(error);
-      alert("Error al iniciar sesión con Google");
-    }
-  });
-
-  // --- CERRAR SESIÓN ---
-  btnCerrarSesion.addEventListener('click', async () => {
-    await signOut(auth);
-    localStorage.removeItem('usuarioActivo');
-    document.getElementById('login-register').style.display = 'block';
-    document.getElementById('todo-list').style.display = 'none';
-    document.getElementById('listaTareas').innerHTML = '';
-  });
-
-  // --- AGREGAR TAREA ---
-  btnAgregar.addEventListener('click', agregarTarea);
-
-  inputTarea.addEventListener('keypress', e => {
-    if (e.key === 'Enter') agregarTarea();
-  });
-
-  btnBorrarTodo.addEventListener('click', borrarTodo);
-
-  // --- FUNCIONES ---
-  function mostrarTodo(nombre) {
-    document.getElementById('login-register').style.display = 'none';
-    document.getElementById('todo-list').style.display = 'block';
-    document.getElementById('nombreUsuario').textContent = nombre;
+  if (!usuario || !password) { // Si falta alguno...
+    return (document.getElementById('mensaje').innerText = "Completa todos los campos."); // Muestra aviso
   }
 
-  async function agregarTarea() {
-    const texto = inputTarea.value.trim();
-    const usuario = localStorage.getItem('usuarioActivo');
-    if (!usuario) { alert("Debés iniciar sesión para agregar tareas."); return; }
-    if (texto === '') return;
-
-    const li = document.createElement('li');
-    const checkbox = document.createElement('input'); checkbox.type = 'checkbox';
-    const span = document.createElement('span'); span.textContent = texto;
-    const borrar = document.createElement('button'); borrar.textContent = 'X'; borrar.classList.add('delete');
-
-    checkbox.addEventListener('change', () => { li.classList.toggle('completed', checkbox.checked); guardarTareasFirebase(usuario); actualizarContador(); });
-    borrar.addEventListener('click', () => { li.remove(); guardarTareasFirebase(usuario); actualizarContador(); });
-    activarEdicion(span, usuario);
-
-    li.appendChild(checkbox); li.appendChild(span); li.appendChild(borrar);
-    document.getElementById('listaTareas').appendChild(li);
-
-    inputTarea.value = '';
-    await guardarTareasFirebase(usuario);
-    actualizarContador();
+  if (localStorage.getItem(usuario)) { // Si el usuario ya existe en localStorage...
+    document.getElementById('mensaje').innerText = "Usuario ya registrado.";
+  } else { // Si no existe...
+    localStorage.setItem(usuario, password); // Guarda usuario y contraseña
+    document.getElementById('mensaje').innerText = "Usuario registrado. Ya puedes iniciar sesión.";
   }
+}
 
-  async function borrarTodo() {
-    if (confirm("¿Seguro que querés eliminar todas las tareas?")) {
-      document.getElementById('listaTareas').innerHTML = '';
-      await guardarTareasFirebase(localStorage.getItem('usuarioActivo'));
-      actualizarContador();
-    }
+function login() { // Función para iniciar sesión
+  const usuario = document.getElementById('usuario').value.trim(); // Lee el usuario
+  const password = document.getElementById('password').value.trim(); // Lee la contraseña
+  const claveGuardada = localStorage.getItem(usuario); // Busca la contraseña guardada
+
+  if (claveGuardada && claveGuardada === password) { // Si coincide...
+    localStorage.setItem('usuarioActivo', usuario); // Guarda quién está logueado
+    mostrarTodo(); // Muestra la lista
+    cargarTareas(usuario); // Carga sus tareas
+  } else {
+    document.getElementById('mensaje').innerText = "Usuario o contraseña incorrectos."; // Error
   }
+}
 
-  function actualizarContador() {
-    const total = document.querySelectorAll('#listaTareas li').length;
-    const completadas = document.querySelectorAll('#listaTareas li.completed').length;
-    document.getElementById('contadorTareas').textContent = `Pendientes: ${total - completadas} / Total: ${total}`;
-  }
+function mostrarTodo() { // Muestra la parte del to-do list
+  document.getElementById('login-register').style.display = 'none'; // Oculta el login
+  document.getElementById('todo-list').style.display = 'block'; // Muestra las tareas
+  document.getElementById('nombreUsuario').textContent = localStorage.getItem('usuarioActivo'); // Escribe el nombre del usuario
+}
 
-  function activarEdicion(span, usuario) {
-    span.addEventListener('dblclick', async () => {
-      const nuevoTexto = prompt("Editar tarea:", span.textContent);
-      if (nuevoTexto) {
-        span.textContent = nuevoTexto.trim();
-        await guardarTareasFirebase(usuario);
-      }
+function cerrarSesion() { // Cierra sesión
+  localStorage.removeItem('usuarioActivo'); // Borra el usuario activo
+  document.getElementById('login-register').style.display = 'block'; // Muestra login
+  document.getElementById('todo-list').style.display = 'none'; // Oculta lista
+  document.getElementById('listaTareas').innerHTML = ''; // Limpia las tareas visibles
+}
+
+// --- TO-DO LIST ---
+function agregarTarea() { // Agrega una nueva tarea
+  const input = document.getElementById('nuevaTarea'); // Obtiene el campo de texto
+  const texto = input.value.trim(); // Saca espacios en blanco
+  if (texto === '') return; // Si está vacío, no hace nada
+
+  const usuario = localStorage.getItem('usuarioActivo'); // Obtiene el usuario actual
+  if (!usuario) return; // Si no hay sesión, no agrega nada
+
+  const lista = document.getElementById('listaTareas'); // Busca la lista <ul>
+  const li = document.createElement('li'); // Crea un nuevo elemento <li>
+
+  const checkbox = document.createElement('input'); // Crea un checkbox
+  checkbox.type = 'checkbox'; // Lo convierte en casilla de verificación
+
+  const span = document.createElement('span'); // Crea un texto
+  span.textContent = texto; // Le pone el texto de la tarea
+
+  const borrar = document.createElement('button'); // Crea un botón de borrar
+  borrar.textContent = 'X'; // Le pone una "X"
+  borrar.classList.add('delete'); // Le da una clase para estilo
+
+  // Marcar completada
+  checkbox.addEventListener('change', () => { // Detecta cuando se marca/desmarca el checkbox
+    li.classList.toggle('completed', checkbox.checked); // Si está marcado, agrega la clase 'completed'
+    guardarTareas(usuario); // Guarda el cambio
+  });
+
+  // Borrar tarea
+  borrar.addEventListener('click', () => { // Cuando se hace clic en "X"...
+    lista.removeChild(li); // Elimina la tarea
+    guardarTareas(usuario); // Guarda la lista actualizada
+  });
+
+  li.appendChild(checkbox); // Agrega el checkbox al <li>
+  li.appendChild(span); // Agrega el texto al <li>
+  li.appendChild(borrar); // Agrega el botón al <li>
+  lista.appendChild(li); // Agrega el <li> a la lista <ul>
+
+  guardarTareas(usuario); // Guarda las tareas en memoria
+  input.value = ''; // Limpia el campo de texto
+}
+
+// Guardar tareas en localStorage por usuario
+function guardarTareas(usuario) {
+  const tareas = []; // Crea un array vacío
+  document.querySelectorAll('#listaTareas li').forEach(li => { // Recorre todas las tareas visibles
+    tareas.push({
+      texto: li.querySelector('span').textContent, // Guarda el texto
+      completada: li.classList.contains('completed') // Guarda si está completada o no
     });
-  }
+  });
+  localStorage.setItem('tareas_' + usuario, JSON.stringify(tareas)); // Guarda todo como texto JSON
+}
 
-  async function guardarTareasFirebase(usuario) {
-    const tareas = [];
-    document.querySelectorAll('#listaTareas li').forEach(li => {
-      tareas.push({
-        texto: li.querySelector('span').textContent,
-        completada: li.classList.contains('completed')
-      });
+// Cargar tareas del usuario activo
+function cargarTareas(usuario) {
+  const lista = document.getElementById('listaTareas'); // Selecciona la lista <ul>
+  lista.innerHTML = ''; // Limpia la lista actual
+  const tareasGuardadas = JSON.parse(localStorage.getItem('tareas_' + usuario) || '[]'); // Carga las tareas guardadas o un array vacío
+
+  tareasGuardadas.forEach(t => { // Recorre cada tarea guardada
+    const li = document.createElement('li'); // Crea un nuevo <li>
+    const checkbox = document.createElement('input'); // Crea un checkbox
+    checkbox.type = 'checkbox';
+    checkbox.checked = t.completada; // Marca si estaba completada
+
+    const span = document.createElement('span');
+    span.textContent = t.texto; // Muestra el texto guardado
+
+    const borrar = document.createElement('button');
+    borrar.textContent = 'X';
+    borrar.classList.add('delete');
+
+    if (t.completada) li.classList.add('completed'); // Si estaba completada, agrega la clase
+
+    checkbox.addEventListener('change', () => { // Permite volver a marcar/desmarcar
+      li.classList.toggle('completed', checkbox.checked);
+      guardarTareas(usuario);
     });
-    await setDoc(doc(db, "tareas", usuario), { tareas });
-  }
 
-  async function cargarTareasFirebase(usuario) {
-    const docRef = doc(db, "tareas", usuario);
-    const docSnap = await getDoc(docRef);
+    borrar.addEventListener('click', () => { // Permite eliminar la tarea
+      lista.removeChild(li);
+      guardarTareas(usuario);
+    });
 
-    const lista = document.getElementById('listaTareas');
-    lista.innerHTML = '';
+    li.appendChild(checkbox);
+    li.appendChild(span);
+    li.appendChild(borrar);
+    lista.appendChild(li); // Agrega el <li> a la lista
+  });
+}
 
-    if (docSnap.exists()) {
-      const tareasGuardadas = docSnap.data().tareas || [];
-      tareasGuardadas.forEach(t => {
-        const li = document.createElement('li');
-        const checkbox = document.createElement('input'); checkbox.type = 'checkbox'; checkbox.checked = t.completada;
-        const span = document.createElement('span'); span.textContent = t.texto;
-        const borrar = document.createElement('button'); borrar.textContent = 'X'; borrar.classList.add('delete');
-
-        if (t.completada) li.classList.add('completed');
-
-        checkbox.addEventListener('change', () => { li.classList.toggle('completed', checkbox.checked); guardarTareasFirebase(usuario); actualizarContador(); });
-        borrar.addEventListener('click', () => { li.remove(); guardarTareasFirebase(usuario); actualizarContador(); });
-        activarEdicion(span, usuario);
-
-        li.appendChild(checkbox); li.appendChild(span); li.appendChild(borrar);
-        lista.appendChild(li);
-      });
-    }
-    actualizarContador();
-  }
-
+// Permitir agregar tarea con Enter
+document.getElementById('nuevaTarea').addEventListener('keypress', e => {
+  if (e.key === 'Enter') agregarTarea(); // Si presionás Enter, agrega la tarea
 });
